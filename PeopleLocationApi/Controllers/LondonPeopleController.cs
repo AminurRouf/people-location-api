@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using PeopleLocationApi.Models;
-using PeopleLocationApi.Services;
+using PeopleLocationApi.Constants;
+using PeopleLocationApi.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace PeopleLocationApi.Controllers
@@ -12,27 +10,40 @@ namespace PeopleLocationApi.Controllers
     [ApiController]
     public class LondonPeopleController : ControllerBase
     {
-        private readonly IBpdtsTestAppService _bpdtsTestAppService;
+        private readonly IPeopleLocationTask _peopleLocationTasks;
 
-        public LondonPeopleController(IBpdtsTestAppService bpdtsTestAppService)
+        public LondonPeopleController(IPeopleLocationTask peopleLocationTasks)
         {
-            _bpdtsTestAppService = bpdtsTestAppService;
+            _peopleLocationTasks = peopleLocationTasks;
         }
 
         /// <summary>
-        /// Fetches all people who are listed as living either in London, 
-        /// or whose current coordinates are within 50 miles of London
+        /// Get people who are listed as living in London.
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [HttpGet("/london/people/")]
+        [HttpGet("/city/london/people/")]
         public async Task<IActionResult> GetPeopleLivingInLondon()
         {
-            var people = await _bpdtsTestAppService.GetPeopleLivingInLondon();
+            var people = await _peopleLocationTasks.GetPeopleLivingIn(LondonCityConstants.Name);
             if (people == null)
                 return NotFound();
-            return  Ok(people);
+            return Ok(people);
         }
 
+        /// <summary>
+        /// Get people whose current coordinates are within 50 miles of London.
+        /// </summary>
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(404, "Not Found")]
+        [HttpGet("/city/london/coordinateswithinfitymiles/people/")]
+        public async Task<IActionResult> GetPeopleLivingWithInFiFtyMilesOfLondon()
+        {
+            var people = await _peopleLocationTasks.GetPeopleLivingWithIn(LondonCityConstants.Name, 50);
+
+            if (people == null)
+                return NotFound();
+            return Ok(people);
+        }
     }
 }
