@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
+using PeopleLocationApi.Constants;
 using PeopleLocationApi.Services;
+using Shouldly;
 using Xunit;
 
 namespace PeopleLocationApiTests.Services
@@ -35,9 +37,9 @@ namespace PeopleLocationApiTests.Services
             var httpClient = new HttpClient(handlerMock.Object) {BaseAddress = new Uri("http://anyoldurl/")};
             var sut = new BpdtsTestAppService(httpClient);
 
-            var people = await sut.GetPeopleLivingInLondon();
+            var result = await sut.GetPeopleLivingIn(LondonCityConstants.Name);
 
-            Assert.NotNull(people);
+           result.ShouldNotBeNull();
         }
     }
 }
