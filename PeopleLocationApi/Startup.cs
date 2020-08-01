@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using PeopleLocationApi.Models;
 using PeopleLocationApi.Services;
+using PeopleLocationApi.Tasks;
 
 namespace PeopleLocationApi
 {
@@ -50,6 +51,8 @@ namespace PeopleLocationApi
                     new Uri(configuration.GetSection("AppSettings").GetSection("BpdtsTestAppBaseApiUri").Value);
                 client.DefaultRequestHeaders.Add("accept", "application/json");
             });
+
+            services.AddTransient<IPeopleLocationTask, PeopleLocationTask>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

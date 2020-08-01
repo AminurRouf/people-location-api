@@ -2,10 +2,10 @@
 {
     public class Person
     {
-        public long Id { get; private set; }
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Email { get; private set; }
+        public long Id { get; protected set; }
+        public string FirstName { get; protected set; }
+        public string LastName { get; protected set; }
+        public string Email { get; protected set; }
 
         public static Person Create(long id, string firstName, string lastName, string email)
         {
