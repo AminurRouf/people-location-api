@@ -3,9 +3,9 @@
   people-location-api <br>
     <a href="https://github.com/AminurRouf/people-location-api"><img src="https://raw.githubusercontent.com/AminurRouf/assets/master/images/api.png" alt="Markdownify" width="200"></a>
     <br>
-    
+    <img src="https://github.com/AminurRouf/people-location-api/workflows/Build%20and%20deploy%20ASP.Net%20Core%20app%20to%20Azure%20Web%20App%20-%20people-location-api/badge.svg" alt="Status badge"/>
+
 </h1>
-[Actions Status](https://github.com/AminurRouf/people-location-api/workflows/Build%20and%20deploy%20ASP.Net%20Core%20app%20to%20Azure%20Web%20App%20-%20people-location-api/badge.svg)
 
 <h4 align="center">An OpenAPI standard API for listing people who either live in London or whose current coordinates are within fifty miles of London </h4>
 
