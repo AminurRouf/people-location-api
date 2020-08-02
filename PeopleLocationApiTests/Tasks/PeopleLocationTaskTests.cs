@@ -42,7 +42,7 @@ namespace PeopleLocationApiTests.Tasks
             var sut = new PeopleLocationTask(mock.Object);
 
             //Act
-            var result = await sut.GetPeopleLivingWithIn(LondonCityConstants.Name, miles);
+            var result = await sut.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, miles);
 
             //Assert
             mock.Verify(x => x.GetUsers(), Times.Once);

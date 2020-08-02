@@ -1,15 +1,15 @@
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
-using System.Text.Json;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
-using PeopleLocationApi.Models;
 using PeopleLocationApi.Services;
 using PeopleLocationApi.Tasks;
 
@@ -35,6 +35,7 @@ namespace PeopleLocationApi
                     .Build();
 
             services.AddControllers();
+            AddProblemDetailsService(services);
 
             services.AddSwaggerGen(c =>
             {
@@ -63,6 +64,8 @@ namespace PeopleLocationApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseProblemDetails();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -73,6 +76,30 @@ namespace PeopleLocationApi
 
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("../swagger/v1/swagger.json", "People Location API V1"); });
+        }
+
+        /// <summary>
+        /// using  Hellang.Middleware.ProblemDetails package to display
+        ///  400 and 500 error problem details as .net core does hides the details.
+        /// https://github.com/dotnet/aspnetcore/issues/4953
+        /// </summary>
+        private void AddProblemDetailsService(IServiceCollection services)
+        {
+            services.AddProblemDetails(options =>
+            {
+                // This is the default behavior; only include exception details in a development environment.
+                options.IncludeExceptionDetails = (ctx, ex) => _env.IsDevelopment();
+
+                // This will map NotImplementedException to the 501 Not Implemented status code.
+                options.MapToStatusCode<NotImplementedException>(StatusCodes.Status501NotImplemented);
+
+                // This will map HttpRequestException to the 503 Service Unavailable status code.
+                options.MapToStatusCode<HttpRequestException>(StatusCodes.Status503ServiceUnavailable);
+
+                // Because exceptions are handled polymorphically, this will act as a "catch all" mapping, which is why it's added last.
+                // If an exception other than NotImplementedException and HttpRequestException is thrown, this will handle it.
+                options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
+            });
         }
     }
 }
