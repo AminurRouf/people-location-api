@@ -7,7 +7,7 @@
         public string IpAddress { get; private set; }
 
         public static User Create(long id, string firstName, string lastName, string email, double latitude,
-            double  longitude, string ipAddress)
+            double longitude, string ipAddress)
         {
             return new User
             {
