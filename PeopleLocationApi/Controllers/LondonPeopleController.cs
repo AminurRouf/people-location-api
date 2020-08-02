@@ -22,7 +22,7 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [HttpGet("/city/london/people/")]
+        [HttpGet("/city/london/people")]
         public async Task<IActionResult> GetPeopleLivingInLondon()
         {
             var people = await _peopleLocationTasks.GetPeopleLivingIn(LondonCityConstants.Name);
@@ -36,10 +36,25 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [HttpGet("/city/london/coordinateswithinfitymiles/people/")]
-        public async Task<IActionResult> GetPeopleLivingWithInFiFtyMilesOfLondon()
+        [HttpGet("/city/london/coordinates-within-fifty-miles/people")]
+        public async Task<IActionResult> GetPeopleCoordinatesWithinFiFtyMilesOfLondon()
         {
-            var people = await _peopleLocationTasks.GetPeopleLivingWithIn(LondonCityConstants.Name, 50);
+            var people = await _peopleLocationTasks.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, 50);
+
+            if (people == null)
+                return NotFound();
+            return Ok(people);
+        }
+
+        /// <summary>
+        /// Get people who are listed as either living in London, or whose current coordinates are within 50 miles of London.
+        /// </summary>
+        [SwaggerResponse(200, "Success")]
+        [SwaggerResponse(404, "Not Found")]
+        [HttpGet("/city/london/living-in-or-coordinates-within-fifty-miles/people")]
+        public async Task<IActionResult> GetPeopleLivingInOrCoordinatesWithInFiftyMilesOfLondon()
+        {
+            var people = await _peopleLocationTasks.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, 50);
 
             if (people == null)
                 return NotFound();

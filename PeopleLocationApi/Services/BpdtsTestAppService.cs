@@ -26,7 +26,7 @@ namespace PeopleLocationApi.Services
             var response = await _httpClient.GetAsync($"city/{city}/users");
             response.EnsureSuccessStatusCode();
             var responseStream = await response.Content.ReadAsStringAsync();
-            return JsonConvertorHelper.DeserializeContent<IEnumerable<Person>>(responseStream);
+            return JsonConvertorHelper.DeserializeContent<List<Person>>(responseStream);
         }
 
         public async Task<List<User>> GetUsers()
