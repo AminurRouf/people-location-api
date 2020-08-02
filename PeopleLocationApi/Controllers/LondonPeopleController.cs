@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PeopleLocationApi.Constants;
+using PeopleLocationApi.Models;
 using PeopleLocationApi.Tasks;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -22,6 +25,7 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
+        [Produces( typeof(List<Person>) ) ]
         [HttpGet("/city/london/people")]
         public async Task<IActionResult> GetPeopleLivingInLondon()
         {
@@ -36,6 +40,7 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
+        [Produces( typeof(List<Person>) ) ]
         [HttpGet("/city/london/coordinates-within-fifty-miles/people")]
         public async Task<IActionResult> GetPeopleCoordinatesWithinFiFtyMilesOfLondon()
         {
@@ -51,6 +56,7 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
+        [Produces( typeof(List<Person>) ) ]
         [HttpGet("/city/london/living-in-or-coordinates-within-fifty-miles/people")]
         public async Task<IActionResult> GetPeopleLivingInOrCoordinatesWithInFiftyMilesOfLondon()
         {
