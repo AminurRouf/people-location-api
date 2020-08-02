@@ -11,7 +11,10 @@ namespace PeopleLocationApi.Services
         Task<IEnumerable<Person>> GetPeopleLivingIn(string city);
         Task<List<User>> GetUsers();
     }
-
+    /// <summary>
+    /// This service encapsulates the calls the bpdts test app endpoints using a httpClient
+    /// and returns the deserialised response as lists of People (or its sub type Users)
+    /// </summary>
     public class BpdtsTestAppService : IBpdtsTestAppService
     {
         private readonly HttpClient _httpClient;
