@@ -6,6 +6,13 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Predicates\**" />
+    <Content Remove="Predicates\**" />
+    <EmbeddedResource Remove="Predicates\**" />
+    <None Remove="Predicates\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.1.1" />

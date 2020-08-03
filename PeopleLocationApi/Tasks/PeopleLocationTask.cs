@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PeopleLocationApi.Helpers;
 using PeopleLocationApi.Models;
-using PeopleLocationApi.Predicates;
 using PeopleLocationApi.Services;
 
 namespace PeopleLocationApi.Tasks
 {
     public interface IPeopleLocationTask
     {
-        Task<IEnumerable<Person>> GetPeopleLivingIn(string city);
-        Task<IEnumerable<Person>> GetPeopleCoordinatesWithIn(string city, double miles);
-        Task<IEnumerable<Person>> GetPeopleLivingInOrCoordinatesWithInFiftyMiles(string london, double miles);
+        Task<IEnumerable<Person>> GetPeopleLivingIn(string place);
+        Task<IEnumerable<Person>> GetPeopleCoordinatesWithIn(double miles, GeoCoordinate coordinate);
+        Task<IEnumerable<Person>> GetPeopleLivingInOrCoordinatesWithInFiftyMiles(string place, double miles, GeoCoordinate coordinate);
     }
+
     /// <summary>
     /// The purpose of this class is to coordinate the interaction of the client
     /// with the business functionality of getting users form the bpdts test app
@@ -27,24 +28,24 @@ namespace PeopleLocationApi.Tasks
             _bpdtsTestAppService = bpdtsTestAppService;
         }
 
-        public async Task<IEnumerable<Person>> GetPeopleLivingIn(string city)
+        public async Task<IEnumerable<Person>> GetPeopleLivingIn(string place)
         {
-            return await _bpdtsTestAppService.GetPeopleLivingIn(city);
+            return await _bpdtsTestAppService.GetPeopleLivingIn(place);
         }
 
-        public async Task<IEnumerable<Person>> GetPeopleCoordinatesWithIn(string city, double miles)
+        public async Task<IEnumerable<Person>> GetPeopleCoordinatesWithIn(double miles, GeoCoordinate coordinate)
         {
             var users = await _bpdtsTestAppService.GetUsers();
-            return FilterWithIn(users, miles);
+            return FilterWithIn(coordinate, users, miles);
         }
 
-        public async Task<IEnumerable<Person>> GetPeopleLivingInOrCoordinatesWithInFiftyMiles(string city, double miles)
+        public async Task<IEnumerable<Person>> GetPeopleLivingInOrCoordinatesWithInFiftyMiles(string place, double miles, GeoCoordinate coordinate)
         {
-            List<Person> peopleLivingIn = (List<Person>) await GetPeopleLivingIn(city);
-            var usersWithin =  await GetPeopleCoordinatesWithIn(city, miles);
+            List<Person> peopleLivingIn = (List<Person>) await GetPeopleLivingIn(place);
+            var usersWithin = await GetPeopleCoordinatesWithIn(miles, coordinate );
 
             //Concat the two lists then do a groupby on id to get a distinct list of people.
-            //A union will not work as users are a sub type of people, the extra properties
+            //A union or distinct will not work as users are a sub type of people, the extra properties
             //on user will mean the same person will be treated as different person on the join.
             var people = peopleLivingIn.Concat(usersWithin);
 
@@ -55,9 +56,10 @@ namespace PeopleLocationApi.Tasks
             return distinctPeople;
         }
 
-        private static List<Person> FilterWithIn(List<User> users, double miles)
+        private static List<Person> FilterWithIn(GeoCoordinate sourceCoordinate, List<User> users, double miles)
         {
-            return new List<Person>(users?.FindAll(user => UserPredicate.IsWithin(user, miles)));
+            return new List<Person>(users?.FindAll(user =>
+                GeoCalculator.IsWithinDistance(sourceCoordinate, new GeoCoordinate(user.Latitude, user.Longitude), miles)));
         }
     }
 }

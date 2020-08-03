@@ -25,7 +25,7 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [Produces( typeof(List<Person>) ) ]
+        [Produces(typeof(List<Person>))]
         [HttpGet("/city/london/people")]
         public async Task<IActionResult> GetPeopleLivingInLondon()
         {
@@ -40,11 +40,12 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [Produces( typeof(List<Person>) ) ]
+        [Produces(typeof(List<Person>))]
         [HttpGet("/city/london/coordinates-within-fifty-miles/people")]
         public async Task<IActionResult> GetPeopleCoordinatesWithinFiFtyMilesOfLondon()
         {
-            var people = await _peopleLocationTasks.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, 50);
+            var people = await _peopleLocationTasks.GetPeopleCoordinatesWithIn(50,
+                new GeoCoordinate(LondonCityConstants.Latitude, LondonCityConstants.Longitude));
 
             if (people == null)
                 return NotFound();
@@ -56,11 +57,13 @@ namespace PeopleLocationApi.Controllers
         /// </summary>
         [SwaggerResponse(200, "Success")]
         [SwaggerResponse(404, "Not Found")]
-        [Produces( typeof(List<Person>) ) ]
+        [Produces(typeof(List<Person>))]
         [HttpGet("/city/london/living-in-or-coordinates-within-fifty-miles/people")]
         public async Task<IActionResult> GetPeopleLivingInOrCoordinatesWithInFiftyMilesOfLondon()
         {
-            var people = await _peopleLocationTasks.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, 50);
+            var people =
+                await _peopleLocationTasks.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, 50,
+                    new GeoCoordinate(LondonCityConstants.Latitude, LondonCityConstants.Longitude));
 
             if (people == null)
                 return NotFound();
