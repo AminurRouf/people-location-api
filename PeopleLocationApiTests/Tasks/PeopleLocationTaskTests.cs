@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Moq;
 using PeopleLocationApi.Constants;
+using PeopleLocationApi.Models;
 using PeopleLocationApi.Services;
 using PeopleLocationApi.Tasks;
 using PeopleLocationApiTests.TestData;
@@ -12,7 +13,7 @@ namespace PeopleLocationApiTests.Tasks
     public class PeopleLocationTaskTests
     {
         [Fact]
-        public async void PeopleLivingInLondonShouldReturnPeople()
+        public async void PeopleLivingInAPlaceShouldReturnPeople()
         {
             // Arrange
             var people = PeopleTestData.GetPeople();
@@ -31,7 +32,7 @@ namespace PeopleLocationApiTests.Tasks
         }
 
         [Fact]
-        public async void UsersWithinFiftyMilesLondonShouldReturnPeople()
+        public async void UsersWithinFiftyMilesOfAPlaceShouldReturnPeople()
         {
             // Arrange
             const double miles = 50;
@@ -42,7 +43,8 @@ namespace PeopleLocationApiTests.Tasks
             var sut = new PeopleLocationTask(mock.Object);
 
             //Act
-            var result = await sut.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, miles);
+            var result = await sut.GetPeopleCoordinatesWithIn(miles,
+                new GeoCoordinate(LondonCityConstants.Latitude, LondonCityConstants.Longitude));
 
             //Assert
             mock.Verify(x => x.GetUsers(), Times.Once);
@@ -51,20 +53,21 @@ namespace PeopleLocationApiTests.Tasks
         }
 
         [Fact]
-        public async void UsersEitherLivingInOrWithinFiftyMilesLondonShouldReturnDistinctPeople()
+        public async void UsersEitherLivingInOrWithinFiftyMilesPlaceShouldReturnDistinctPeople()
         {
             // Arrange
             const double miles = 50;
             var users = PeopleTestData.GetUsers();
             var people = PeopleTestData.GetPeople();
-            var expectedCount = 1;// Cause first person in users and people are the same
+            var expectedCount = 1; // Cause first person in users and people are the same
             var mock = new Mock<IBpdtsTestAppService>();
             mock.Setup(x => x.GetUsers()).ReturnsAsync(users).Verifiable();
             mock.Setup(x => x.GetPeopleLivingIn(LondonCityConstants.Name)).ReturnsAsync(people).Verifiable();
             var sut = new PeopleLocationTask(mock.Object);
 
             //Act
-            var result = await sut.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, miles);
+            var result = await sut.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, miles,
+                new GeoCoordinate(LondonCityConstants.Latitude, LondonCityConstants.Longitude));
 
             //Assert
             mock.Verify(x => x.GetUsers(), Times.Once);

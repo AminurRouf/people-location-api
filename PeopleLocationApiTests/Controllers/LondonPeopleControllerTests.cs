@@ -56,10 +56,9 @@ namespace PeopleLocationApiTests.Controllers
         public async Task PeopleCoordinatesWithInFiftyMilesOfLondonShouldReturnOkWithAListOfPeople()
         {
             // Arrange
-            const double miles = 50;
             var people = new List<Person> {Person.Create(1, "firstName1", "lastName1", "test@me.com")};
             var mock = new Mock<IPeopleLocationTask>();
-            mock.Setup(x => x.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, miles)).ReturnsAsync(people).Verifiable();
+            mock.Setup(x => x.GetPeopleCoordinatesWithIn(It.IsAny<double>(), It.IsAny<GeoCoordinate>())).ReturnsAsync(people).Verifiable();
 
             var controller = new LondonPeopleController(mock.Object);
 
@@ -67,7 +66,7 @@ namespace PeopleLocationApiTests.Controllers
             var result = await controller.GetPeopleCoordinatesWithinFiFtyMilesOfLondon() as OkObjectResult;
 
             // Assert 
-            mock.Verify(x => x.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, miles), Times.Once);
+            mock.Verify(x => x.GetPeopleCoordinatesWithIn(It.IsAny<double>(), It.IsAny<GeoCoordinate>()), Times.Once);
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(200);
             ((IEnumerable<Person>) result.Value).Count().ShouldBe(people.Count);
@@ -77,9 +76,8 @@ namespace PeopleLocationApiTests.Controllers
         public async Task PeopleCoordinatesWithInFiftyMilesOfLondonShouldReturnNotFound()
         {
             // Arrange
-            const double miles = 50;
             var mock = new Mock<IPeopleLocationTask>();
-            mock.Setup(x => x.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, 50)).ReturnsAsync((IEnumerable<Person>) null)
+            mock.Setup(x => x.GetPeopleCoordinatesWithIn(It.IsAny<double>(), It.IsAny<GeoCoordinate>())).ReturnsAsync((IEnumerable<Person>) null)
                 .Verifiable();
             var controller = new LondonPeopleController (mock.Object);
 
@@ -87,7 +85,7 @@ namespace PeopleLocationApiTests.Controllers
             var result = await controller.GetPeopleCoordinatesWithinFiFtyMilesOfLondon() as NotFoundResult;
             
             // Assert
-            mock.Verify(x => x.GetPeopleCoordinatesWithIn(LondonCityConstants.Name, miles), Times.Once);
+            mock.Verify(x => x.GetPeopleCoordinatesWithIn(It.IsAny<double>(), It.IsAny<GeoCoordinate>()), Times.Once);
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(404);
         }
@@ -96,10 +94,10 @@ namespace PeopleLocationApiTests.Controllers
         public async Task PeopleLivingInOrCoordinatesWithInFiftyMilesOfLondonShouldReturnOkWithAListOfPeople()
         {
             // Arrange
-            const double miles = 50;
             var people = new List<Person> {Person.Create(1, "firstName1", "lastName1", "test@me.com")};
+            var coordinates = new GeoCoordinate(55.008037, -1.590167);
             var mock = new Mock<IPeopleLocationTask>();
-            mock.Setup(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, miles)).ReturnsAsync(people).Verifiable();
+            mock.Setup(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<GeoCoordinate>())).ReturnsAsync(people).Verifiable();
 
             var controller = new LondonPeopleController(mock.Object);
 
@@ -107,7 +105,7 @@ namespace PeopleLocationApiTests.Controllers
             var result = await controller.GetPeopleLivingInOrCoordinatesWithInFiftyMilesOfLondon() as OkObjectResult;
 
             // Assert 
-            mock.Verify(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, miles), Times.Once);
+            mock.Verify(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(It.IsAny<string>(),It.IsAny<double>(), It.IsAny<GeoCoordinate>()), Times.Once);
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(200);
             ((IEnumerable<Person>) result.Value).ShouldNotBeNull();
@@ -117,9 +115,8 @@ namespace PeopleLocationApiTests.Controllers
         public async Task PeopleLivingInOrCoordinatesWithInFiftyMilesOfLondonShouldReturnNotFound()
         {
             // Arrange
-            const double miles = 50;
             var mock = new Mock<IPeopleLocationTask>();
-            mock.Setup(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, 50)).ReturnsAsync((IEnumerable<Person>) null)
+            mock.Setup(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<GeoCoordinate>())).ReturnsAsync((IEnumerable<Person>) null)
                 .Verifiable();
             var controller = new LondonPeopleController (mock.Object);
 
@@ -127,7 +124,7 @@ namespace PeopleLocationApiTests.Controllers
             var result = await controller.GetPeopleLivingInOrCoordinatesWithInFiftyMilesOfLondon() as NotFoundResult;
             
             // Assert
-            mock.Verify(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(LondonCityConstants.Name, miles), Times.Once);
+            mock.Verify(x => x.GetPeopleLivingInOrCoordinatesWithInFiftyMiles(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<GeoCoordinate>()), Times.Once);
             result.ShouldNotBeNull();
             result.StatusCode.ShouldBe(404);
         }
