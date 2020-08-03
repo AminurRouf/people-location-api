@@ -8,7 +8,7 @@ namespace PeopleLocationApi.Services
 {
     public interface IBpdtsTestAppService
     {
-        Task<IEnumerable<Person>> GetPeopleLivingIn(string city);
+        Task<IEnumerable<Person>> GetPeopleLivingIn(string place);
         Task<List<User>> GetUsers();
     }
     /// <summary>
@@ -24,9 +24,9 @@ namespace PeopleLocationApi.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Person>> GetPeopleLivingIn(string city)
+        public async Task<IEnumerable<Person>> GetPeopleLivingIn(string place)
         {
-            var response = await _httpClient.GetAsync($"city/{city}/users");
+            var response = await _httpClient.GetAsync($"city/{place}/users");
             response.EnsureSuccessStatusCode();
             var responseStream = await response.Content.ReadAsStringAsync();
             return JsonConvertorHelper.DeserializeContent<List<Person>>(responseStream);
