@@ -44,15 +44,22 @@ This API is built on .NET Core 3.1 framework with Visual Studio 2019 IDE. To run
 
 Click  <button style='background-color:green; color:white'>&darr; Code.</button> and either download ZIP or clone the master branch.
 ```bash
+# If cloning in a command window
 # Clone this repository
-$ git clone https://github.com/AminurRouf/people-location-api.git
+ git clone https://github.com/AminurRouf/people-location-api.git
 
 # Go into the repository
-$ cd PeopleLocationApi
+ cd people-location-api
 
 # Build and restore dependencies using dotnet CLI.
 # (You shouldn't  have to run dotnet restore because build implicitly restores all)
 $ dotnet build 
+
+# Run tests
+ dotnet test
+
+# After testing finishes
+ cd PeopleLocationApi
 
 # Run the app
 $ dotnet Run
@@ -60,7 +67,7 @@ $ dotnet Run
 
 ## Run
 ##### dotnet CLI
-If you've used the CLI to build and run the project, open a browser and navigate to https://localhost:5001/swagger/index.html . This should launch the Swagger UI page with a list of available endpoints. Click on any of the presented endpoint to expand the accordian, click "Try it out" and press the "Execute" button. This will make a request to the API and respond with an status code and the response body should contain a list of people who meet the criteria - if the status code is 200.
+If you've used the CLI to build and run the project, open a browser and navigate to https://localhost:5001/swagger/index.html . <strong>Ignore and advance through any browser security warnings you may encounter</strong> .This should launch the Swagger UI page with a list of available endpoints. Click on any of the presented endpoint to expand the accordian, click "Try it out" and press the "Execute" button. This will make a request to the API and respond with an status code and the response body should contain a list of people who meet the criteria - if the status code is 200.
 
 ##### Visual Studio 2019
 With VS 2019 navigate to the project solution PeopleLocationApi.sln, open it. Press <button type="button"> CTRL+SHIFT+B</button> to build it. <button type="button">F5</button> to run the project. it should automatically launch and open a browser page https://localhost:44349/swagger/index.html and present the Swagger UI as described above.
@@ -87,7 +94,7 @@ Without a business user or an analyst to clarify the requirements, a number of a
 
 In designing the API, I've tried to use the <strong>SOLID</strong> design principles of object-oriented programming, which the programming langauge C# provides full support for. I've have tried to keep the classes specific to the task, implementing only interfaces that it needs and used inheritance only where appropiate. The aim of all this is to achieve as best as possible the Single Responsiblity Principle so that the software can deal with the ripple effects of possible future changes without over engineering it or catering for things not needed yet or possibly ever.
 
-One good side effect of adhering to these principles, is that the testability of the components improve and the boundaries of what needs to be tested are better defined. I've used xUnit and TDD to drive the design of the API, using the classic Arrange, Assert, Act formula. The mocking package Moq was used to mock external dependecies of the unit under test.
+One good side effect of adhering to these principles, is that the testability of the components improve and the boundaries of what needs to be tested are better defined. I've used xUnit and TDD to drive the design of the API, using the classic Arrange, Assert, Act formula. The mocking package Moq was used to mock external dependecies of the unit under test. More than 85% test code coverage was achieved.
 
 Another benefit is that should the need arise, to extend the API in the future so that it can deal with any city or any given distance, it would be fairly trivial to implement these extra conditions with minimal code changes and therefore limiting any potential side effects. The core business logic of the API is built in a reusable fashion and hopefully it should not need to change at all.
 
