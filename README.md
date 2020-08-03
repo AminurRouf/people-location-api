@@ -43,8 +43,9 @@ This API is built on .NET Core 3.1 framework with Visual Studio 2019 IDE. To run
 ## Setup
 
 Click  <button style='background-color:green; color:white'>&darr; Code.</button> and either download ZIP or clone the master branch.
+
+To clone the repository in a command prompt window and to use the dotnet CLI after installing the .NET 3.1 SDK do the following :
 ```bash
-# If cloning in a command window
 # Clone this repository
  git clone https://github.com/AminurRouf/people-location-api.git
 
@@ -53,7 +54,7 @@ Click  <button style='background-color:green; color:white'>&darr; Code.</button>
 
 # Build and restore dependencies using dotnet CLI.
 # (You shouldn't  have to run dotnet restore because build implicitly restores all)
-$ dotnet build 
+ dotnet build 
 
 # Run tests
  dotnet test
@@ -62,7 +63,7 @@ $ dotnet build
  cd PeopleLocationApi
 
 # Run the app
-$ dotnet Run
+ dotnet run
 ```
 
 ## Run
