@@ -14,16 +14,16 @@
 
 The people-location-api ("The API") is a RESTful API that retrieves users from another app API, who are either living in London or  whose coordinates are currently within 50 miles of London. Full instructions can be found  [here](http://bpdts-test-app.herokuapp.com/instructions) .
 
-This web API is built with C# and .NET Core 3.1 framework using a  [Swagger](https://swagger.io/) tooling package called [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) to meet OpenAPI 3.0 specifications.
+This web API is built with C# and .NET Core 3.1 framework using a [Swagger](https://swagger.io/) tooling package called [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) to meet OpenAPI 3.0 specifications.
 
 <p align="center">
   <a href="#live-demo">Live Demo</a> •
   <a href="#requirements">Requirements</a> •
   <a href="#setup">Setup</a> •
-  <a href="#sun">Run</a> •
   <a href="#endpoints">Endpoints</a> •
   <a href="#design">Design</a>  •
-  <a href="#license">License</a>
+  <a href="#next-steps">Next Steps</a> •
+  <a href="#disclaimer">Disclaimer</a>
 </p>
 
 ## Live Demo
@@ -32,7 +32,7 @@ A live demonstration of the API can be found at https://people-location-api.azur
 
 ## Requirements
 
-This API is built on .NET Core 3.1 framework with Visual Studio 2019 IDE. To run the API locally you need the .NET Core 3.1 SDK installed on the machine. Running the project through Visual Studio is the easiest way to get up and running, an alternative is to use Visual Studio Code. Both are optional as you can use the dotnet CLI tool which installs with the SDK to build and run the project.The dotnet CLI documentation can be found [here](https://docs.microsoft.com/en-us/dotnet/core/tools/).
+This API is built on .NET Core 3.1 framework with Visual Studio 2019 IDE. To run the API locally you need the <strong>.NET Core 3.1 SDK </strong> installed on the machine. Running the project through Visual Studio is the easiest way to get up and running, an alternative is to use Visual Studio Code. Both are optional as you can use the dotnet CLI tool which installs with the SDK to build and run the project.The dotnet CLI documentation can be found [here](https://docs.microsoft.com/en-us/dotnet/core/tools/).
 
 #### Download Links
 - [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1)
@@ -71,34 +71,37 @@ With VS 2019 navigate to the project solution PeopleLocationApi.sln, open it. Pr
 There are three specific endpoints in this API.
  - <strong>/city/london/people</strong> - This gets a list of people who are listed as living in London.
  - <strong>/city/london/coordinates-within-fifty-miles/people</strong> - This gets a list of people whose coordinates are within fifty miles of London.
- - <strong>/city/london/living-in-or-coordinates-within-fifty-miles/people</strong> - This gets a <em>distinct</em> people who are listed as either living in London, or whose current coordinates are within 50 miles of London. i.e. If a person appears in both above endpoints, they will only be listed here once.
+ - <strong>/city/london/living-in-or-coordinates-within-fifty-miles/people</strong> - This gets a list of <em>distinct</em> people who are either living in London, or whose current coordinates are within 50 miles of London. i.e. If a person appears in both above endpoints, they will only be listed here once.
 
 ## Design
 
 ##### Considerations
 
 Without a business user or an analyst to clarify the requirements, a number of assumptions have been made with regards to the instructions provided.
-- The term  english <strong>"within fifty miles"</strong> has been interepreted as <em>distance <= 50 miles</em> rather than <em>distance < 50 miles</em>.
-- It was not altogether clear if the instructions were asking for a single endpoint to list people who are either living in London or whose coordinates are currently within fity miles of London; or to list them seperately. The instructions did say "design an API",  based on that the API has implemented three endpoints to cover both scenarios. It also means that  the API is flexible to allow it's clients to make the implementation details for their own scenarios.    
-- The longitudal and latitudal coordinates of London city are citied differently by different sources. Latitude of 51.509865 and Longitude of -0.118092 are citied here https://www.latlong.net/place/london-the-uk-14153.html and are used the API to calculate distances.
-- There are different methods of trigonometry to calculate the distances for a given longitude and latitude. .NET core 3.1 framework does not have a built in GeoCoordinate class. The API used a cut down version of the source code from the  GeoCoordinate class in .NET 4.8 framework and derived it using the Haversine Formula as detailed here http://mathforum.org/library/drmath/view/51879.html .
+- The term <strong>"within fifty miles"</strong> has been interepreted as <em>distance <= 50 miles</em> rather than <em>distance < 50 miles</em>.
+- It was not altogether clear if the instructions were asking for a single endpoint to list people who are either living in London or whose coordinates are currently within fity miles of London; or to list them seperately using two different endpoints. The instructions did say <em>design an API</em>, on that note the API has implemented three endpoints to cover both scenarios. It also means that  the API is flexible to allow it's clients to make the implementation choice for their own requirements.    
+- The longitudal and latitudal coordinates of London city are citied differently by different sources. Latitude of 51.509865 and Longitude of -0.118092 are citied here https://www.latlong.net/place/london-the-uk-14153.html and are used by the API to calculate distances.
+- There are different methods to calculate the distances for a given longitude and latitude. .NET core 3.1 framework does not have a built in GeoCoordinate class. The API used a cut down version of the source code from the  GeoCoordinate class in .NET 4.8 framework and derived it using the Haversine Formula as detailed here http://mathforum.org/library/drmath/view/51879.html .
 
 ##### Implementation
 
 In designing the API, I've tried to use the <strong>SOLID</strong> design principles of object-oriented programming, which the programming langauge C# provides full support for. I've have tried to keep the classes specific to the task, implementing only interfaces that it needs and used inheritance only where appropiate. The aim of all this is to achieve as best as possible the Single Responsiblity Principle so that the software can deal with the ripple effects of possible future changes without over engineering it or catering for things not needed yet or possibly ever.
 
-One side effect of adhering to these principles, is that the testability of the components improve and the boundaries of what needs to be tested are better defined. I've used xUnit and TDD to drive the design of the API. The mocking package Moq was used to mock external dependecies of the unit under test.
+One good side effect of adhering to these principles, is that the testability of the components improve and the boundaries of what needs to be tested are better defined. I've used xUnit and TDD to drive the design of the API, using the classic Arrange, Assert, Act formula. The mocking package Moq was used to mock external dependecies of the unit under test.
 
-Another effect is that should the need to extend the API in the future, so that it can deal with any city or any given distance, it would be fairly trivial to implement these extra conditions with minimal code changes and therefore limiting any potential side effects. The core business logic of the API is built in a parameterised fashion and hopefully it should not need to change at all.
+Another benefit is that should the need arise, to extend the API in the future so that it can deal with any city or any given distance, it would be fairly trivial to implement these extra conditions with minimal code changes and therefore limiting any potential side effects. The core business logic of the API is built in a reusable fashion and hopefully it should not need to change at all.
 
 ##### Semantics
 
-The bdpdts test app returns a list of users, however the instructions speak of listing people. Whilst the difference maybe a subtle, I felt the semantic difference was important in the context of a domain driven design approach and hence have gone to some lengths to ensure that this API returns specifically people rather than users. Whilst User inherits from People, it carries extra properties such as longitude, latitude and ip address which I felt should not be omitted in the response as these properties are not what i would attribute to a person in normal langauge usage.
+The bdpdts test app returns a list of Users, however the instructions speak of listing People. Whilst the difference maybe a subtle, I felt the semantic difference was important in the context of a domain driven design approach and hence have gone to some lengths to ensure that this API returns specifically People rather than Users. Whilst User inherits from Person, it carries extra properties such as longitude, latitude and ip address which I felt should be omitted in the response as these properties are not what i would attribute to a person in normal langauge usage.
 
 #### Best Practices
+
 The  bdpdts test app returns json properties using snake-case. The API returns people properties using camelCase naming convention as per google json standard guide lines found [here](https://google.github.io/styleguide/jsoncstyleguide.xml) .
 
 The endpoint names and designs tried to follow the microsoft Web API design guidelines found [here](https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design).
+
+Most importantly I have tried to be consistant in whatever conventions or standards I have adopted to use through out the project.
 
 ## Dependancies
 
@@ -108,7 +111,5 @@ A full list of the dependancies used by the API can be found [here](https://gith
 This API could be extended to allow it to return people from any city and within any distance. A CityPeople controller as oppossed to just LondonPeople.
 
 ## Disclaimer
-This API was written entirely by me Aminur Rouf (some commits may show up as nar25 - that's also me!). This is a test API and  uses dummy test data provided by bpdts test app. 
-
-
+This API was written entirely by me Aminur Rouf (some commits may show up as nar25 - that's also me!). This is a test API and  uses dummy test data provided by bpdts test app and should not be used for anything important - like trying to locate a real person within fifty miles of London.
 
